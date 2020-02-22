@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mPrevButton;
     private TextView mQuestionTextView;
     private int mCurrentIndex = 0;
     private Question[] mQuestionBank = new Question[]{
@@ -29,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
 
         // initializes the text on the screen with a value
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
 
         // gets the current question
         // sets the text into the test view
@@ -66,6 +74,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // increment index and reset to 0 again if bank reaches max index
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
+
+        mPrevButton = findViewById(R.id.prev_button);
+
+        mPrevButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                mCurrentIndex = (mCurrentIndex - 1);
+                if(mCurrentIndex < 0)
+                    mCurrentIndex = mQuestionBank.length - 1;
                 updateQuestion();
             }
         });
