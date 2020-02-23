@@ -4,15 +4,18 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
-    private Button mPrevButton;
+    private ImageButton mNextButton;
+    private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+    private TextView mScore;
+    private int counter = 0;
     private int mCurrentIndex = 0;
     private Question[] mQuestionBank = new Question[]{
         new Question(R.string.question_australia, true),
@@ -28,8 +31,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mScore = findViewById(R.id.counter);
+
         // initializes the text on the screen with a value
-        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        mQuestionTextView = findViewById(R.id.question_text_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         // sets the text into the test view
         updateQuestion();
 
-        mTrueButton = (Button) findViewById(R.id.true_button);
+        mTrueButton = findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,21 +58,30 @@ public class MainActivity extends AppCompatActivity {
                  */
 
                 //  Toast.show() displays it on the screen
-                checkAnswer(true);
+                if(checkAnswer(true)) {
+                    //increments the score
+                    mScore.setText(Integer.toString(++counter));
+                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                    updateQuestion();
+                }
             }
         });
 
-        mFalseButton = (Button) findViewById(R.id.false_button);
+        mFalseButton = findViewById(R.id.false_button);
         mFalseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                checkAnswer(false);
+                if(checkAnswer(false)) {
+                    mScore.setText(Integer.toString(++counter));
+                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                    updateQuestion();
+                }
             }
         });
 
         // creating listener for next button
         // finding button from unique name given in xml
-        mNextButton =  (Button) findViewById(R.id.next_button);
+        mNextButton = findViewById(R.id.next_button);
 
         mNextButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -96,14 +110,17 @@ public class MainActivity extends AppCompatActivity {
         mQuestionTextView.setText(question);
     }
 
-    private void checkAnswer(boolean userPressedTrue) {
+    private boolean checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+        boolean isTrue = false;
         int messageResId = 0;
         if(answerIsTrue == userPressedTrue) {
             messageResId = R.string.correct_toast;
+            isTrue = true;
         }
         else
             messageResId = R.string.incorrect_toast;
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+        return isTrue;
     }
 }
