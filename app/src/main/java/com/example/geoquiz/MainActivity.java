@@ -1,4 +1,5 @@
 package com.example.geoquiz;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+    private static final String KEY_INDEX = "index";
+    private static final String COUNTER = "counter";
+
     private Button mTrueButton;
     private Button mFalseButton;
     private ImageButton mNextButton;
@@ -29,7 +34,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //calling Log.d(...) to log a message
+        Log.d(TAG, "onCreate(Bundle) called");
+
         setContentView(R.layout.activity_main);
+
+        if(savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            counter = savedInstanceState.getInt(COUNTER, 0);
+        }
 
         mScore = findViewById(R.id.counter);
 
@@ -103,6 +117,46 @@ public class MainActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+
+        // saves the current index and puts it into the KEY_INDEX
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putInt(COUNTER, counter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroyed() called");
     }
 
     private void updateQuestion() {
