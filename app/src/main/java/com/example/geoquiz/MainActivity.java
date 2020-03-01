@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
     private TextView mScore;
+    private String mGrade;
+
     private int counter = 0;
     private int mCurrentIndex = 0;
     private Question[] mQuestionBank = new Question[]{
@@ -75,9 +77,16 @@ public class MainActivity extends AppCompatActivity {
                 if(checkAnswer(true)) {
                     //increments the score
                     mScore.setText(Integer.toString(++counter));
-                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                    updateQuestion();
                 }
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                if(mCurrentIndex == 0) {
+                    mGrade = getResources().getString(R.string.score,
+                            counter / (double)mQuestionBank.length);
+                    Toast.makeText(MainActivity.this, mGrade, Toast.LENGTH_SHORT).show();
+                    counter = 0;
+                }
+                updateQuestion();
+                mScore.setText(Integer.toString(counter));
             }
         });
 
@@ -87,9 +96,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(checkAnswer(false)) {
                     mScore.setText(Integer.toString(++counter));
-                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                    updateQuestion();
                 }
+
+                // moved this to the outside to prevent user from entering multiple answers
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                if(mCurrentIndex == 0) {
+                    mGrade = getResources().getString(R.string.score,
+                            counter / (double)mQuestionBank.length);
+                    Toast.makeText(MainActivity.this, mGrade, Toast.LENGTH_SHORT).show();
+                }
+                updateQuestion();
+                mScore.setText(Integer.toString(counter));
             }
         });
 
