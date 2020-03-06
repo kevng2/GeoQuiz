@@ -13,6 +13,6 @@
     <!--Will trigger pop up messages-->
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
-    <string name="score">Grade %.1f</string>
+    <string name="score">Grade %.1f%%</string>
 
 </resources>

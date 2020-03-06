@@ -41,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate(Bundle) called");
 
         setContentView(R.layout.activity_main);
-
+        mScore = findViewById(R.id.counter);
         if(savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             counter = savedInstanceState.getInt(COUNTER, 0);
+            mScore.setText(Integer.toString(counter));
         }
 
-        mScore = findViewById(R.id.counter);
 
         // initializes the text on the screen with a value
         mQuestionTextView = findViewById(R.id.question_text_view);
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 if(mCurrentIndex == 0) {
                     mGrade = getResources().getString(R.string.score,
-                            counter / (double)mQuestionBank.length);
+                            counter / (double)mQuestionBank.length * 100);
                     Toast.makeText(MainActivity.this, mGrade, Toast.LENGTH_SHORT).show();
                     counter = 0;
                 }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 if(mCurrentIndex == 0) {
                     mGrade = getResources().getString(R.string.score,
-                            counter / (double)mQuestionBank.length);
+                            counter / (double)mQuestionBank.length * 100);
                     Toast.makeText(MainActivity.this, mGrade, Toast.LENGTH_SHORT).show();
                 }
                 updateQuestion();
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // increment index and reset to 0 again if bank reaches max index
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                //mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
             }
         });
