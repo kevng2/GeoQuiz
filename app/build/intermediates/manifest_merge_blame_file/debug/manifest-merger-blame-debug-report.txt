@@ -11,7 +11,7 @@
 9-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml
 10
 11    <application
-11-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:6:5-21:19
+11-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:6:5-22:19
 12        android:allowBackup="true"
 12-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:7:9-35
 13        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -28,20 +28,23 @@
 19        android:testOnly="true"
 20        android:theme="@style/AppTheme" >
 20-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:12:9-40
-21        <activity android:name="com.example.geoquiz.MainActivity" >
-21-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:14:9-20:20
-21-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:14:19-47
-22            <intent-filter>
-22-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:15:13-19:29
-23                <action android:name="android.intent.action.MAIN" />
-23-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:16:17-69
-23-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:16:25-66
-24
-25                <category android:name="android.intent.category.LAUNCHER" />
-25-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:18:17-77
-25-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:18:27-74
-26            </intent-filter>
-27        </activity>
-28    </application>
-29
-30</manifest>
+21        <activity android:name="com.example.geoquiz.CheatActivity" />
+21-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:14:9-60
+21-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:14:19-48
+22        <activity android:name="com.example.geoquiz.MainActivity" >
+22-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:15:9-21:20
+22-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:15:19-47
+23            <intent-filter>
+23-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:16:13-20:29
+24                <action android:name="android.intent.action.MAIN" />
+24-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:17:17-69
+24-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:17:25-66
+25
+26                <category android:name="android.intent.category.LAUNCHER" />
+26-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:19:17-77
+26-->/Users/kevinnguyen/AndroidStudioProjects/GeoQuiz/app/src/main/AndroidManifest.xml:19:27-74
+27            </intent-filter>
+28        </activity>
+29    </application>
+30
+31</manifest>
