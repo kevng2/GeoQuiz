@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
     private static final String COUNTER = "counter";
+    private static final String CHEATER = "cheater";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -23,9 +25,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
     private TextView mScore;
     private String mGrade;
+    private boolean mIsCheater;
 
     private int counter = 0;
     private int mCurrentIndex = 0;
+    private int cheatIndex;
     private Question[] mQuestionBank = new Question[]{
         new Question(R.string.question_australia, true),
         new Question(R.string.question_ocean, true),
@@ -48,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             counter = savedInstanceState.getInt(COUNTER, 0);
             mScore.setText(Integer.toString(counter));
+            mIsCheater = savedInstanceState.getBoolean(CHEATER, false);
         }
-
 
         // initializes the text on the screen with a value
         mQuestionTextView = findViewById(R.id.question_text_view);
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     //increments the score
                     mScore.setText(Integer.toString(++counter));
                 }
+                mIsCheater = false;
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 if(mCurrentIndex == 0) {
                     mGrade = getResources().getString(R.string.score,
@@ -100,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                     mScore.setText(Integer.toString(++counter));
                 }
 
+                mIsCheater = false;
+
                 // moved this to the outside to prevent user from entering multiple answers
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 if(mCurrentIndex == 0) {
@@ -119,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 // intents are used to switch between the MainActivity and the CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
-
+                cheatIndex = mCurrentIndex;
                 // run the activity
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
@@ -134,6 +141,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // increment index and reset to 0 again if bank reaches max index
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                if(cheatIndex == mCurrentIndex) {
+                    mIsCheater = true;
+                }
+                else
+                    mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -144,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex - 1);
+                mIsCheater = false;
                 if(mCurrentIndex < 0)
                     mCurrentIndex = mQuestionBank.length - 1;
                 updateQuestion();
@@ -177,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         // saves the current index and puts it into the KEY_INDEX
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
         savedInstanceState.putInt(COUNTER, counter);
+        savedInstanceState.putBoolean(CHEATER, mIsCheater);
     }
 
     @Override
@@ -200,13 +214,30 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         boolean isTrue = false;
         int messageResId = 0;
-        if(answerIsTrue == userPressedTrue) {
-            messageResId = R.string.correct_toast;
-            isTrue = true;
+        if(mIsCheater) {
+            messageResId = R.string.judgement_toast;
         }
-        else
-            messageResId = R.string.incorrect_toast;
+        else {
+            if (answerIsTrue == userPressedTrue) {
+                messageResId = R.string.correct_toast;
+                isTrue = true;
+            } else
+                messageResId = R.string.incorrect_toast;
+        }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
         return isTrue;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if(requestCode == REQUEST_CODE_CHEAT) {
+            if(data == null) {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+        }
     }
 }
