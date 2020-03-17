@@ -1,6 +1,10 @@
 package com.example.geoquiz;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
@@ -24,12 +28,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
     private TextView mScore;
+    private TextView mTokenCount;
     private String mGrade;
+    private String tokenStr;
     private boolean mIsCheater;
-
     private int counter = 0;
     private int mCurrentIndex = 0;
     private int cheatIndex;
+    private int mCheatToken = 3;
+
     private Question[] mQuestionBank = new Question[]{
         new Question(R.string.question_australia, true),
         new Question(R.string.question_ocean, true),
@@ -64,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
+
+        mTokenCount = findViewById(R.id.token_count);
+        updateToken();
 
         // gets the current question
         // sets the text into the test view
@@ -123,12 +133,34 @@ public class MainActivity extends AppCompatActivity {
         mCheatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // intents are used to switch between the MainActivity and the CheatActivity
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue, mCheatToken);
+
+                // used to close the next button loophole
                 cheatIndex = mCurrentIndex;
+
                 // run the activity
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
+                /*
+                if(mCheatToken == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    int cx = mCheatButton.getWidth() / 2;
+                    int cy = mCheatButton.getHeight() / 2;
+                    float radius = mCheatButton.getWidth();
+                    Animator anim = ViewAnimationUtils
+                            .createCircularReveal(mCheatButton, cx, cy, radius, 0);
+                    anim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            mCheatButton.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                    anim.start();
+                }
+
+                 */
             }
         });
 
@@ -238,6 +270,37 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            mCheatToken = CheatActivity.wasIntAnswerShown(data);
+            updateToken();
+            if(mCheatToken == 0) {
+                makeButtonInvisible(mCheatButton);
+            }
+        }
+    }
+
+    public void updateToken() {
+        tokenStr = getResources().getString(R.string.token_count_text) + " " + mCheatToken;
+        mTokenCount.setText(tokenStr);
+    }
+
+    public static void makeButtonInvisible(final Button button) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int cx = button.getWidth() / 2;
+            int cy = button.getHeight() / 2;
+            float radius = button.getWidth();
+            Animator anim = ViewAnimationUtils
+                    .createCircularReveal(button, cx, cy, radius, 0);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    button.setVisibility(View.INVISIBLE);
+                }
+            });
+            anim.start();
+        }
+        else {
+            button.setVisibility(View.INVISIBLE);
         }
     }
 }

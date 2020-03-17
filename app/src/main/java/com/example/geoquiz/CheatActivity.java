@@ -17,7 +17,9 @@ public class CheatActivity extends AppCompatActivity {
     private static final String CHEATER = "cheater";
 
     private boolean mAnswerIsTrue;
+    private int mCheatToken;
     private TextView mAnswerTextView;
+    private TextView mAPILevel;
     private Button mShowAnswerButton;
 
     //key to be put in the putExtra() function
@@ -26,11 +28,14 @@ public class CheatActivity extends AppCompatActivity {
 
     // extra key
     private static final String EXTRA_ANSWER_SHOWN =
-            "com..android.geoquiz.answer_shown";
+            "com.android.geoquiz.answer_shown";
+    private static final String NUMBER_OF_CHEAT_TOKENS =
+            "com.android.geoquiz.num_token";
 
-    public static Intent newIntent(Context packageContext, boolean answerIsTrue) {
+    public static Intent newIntent(Context packageContext, boolean answerIsTrue, int numToken) {
         Intent intent = new Intent(packageContext, CheatActivity.class);
         intent.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+        intent.putExtra(NUMBER_OF_CHEAT_TOKENS, numToken);
         return intent;
     }
 
@@ -38,10 +43,15 @@ public class CheatActivity extends AppCompatActivity {
         return result.getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
     }
 
+    public static int wasIntAnswerShown(Intent result) {
+        return result.getIntExtra(NUMBER_OF_CHEAT_TOKENS, 0);
+    }
+
     // will set the intent
-    private void setAnswerShownResult(boolean isAnswerShown) {
+    private void setAnswerShownResult(boolean isAnswerShown, int numToken) {
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        data.putExtra(NUMBER_OF_CHEAT_TOKENS, numToken);
 
         // when the user presses SHOW ANSWER button, the CheatActivity packages up the result
         // code and the intent in the call to setResult(int, Intent).
@@ -55,12 +65,19 @@ public class CheatActivity extends AppCompatActivity {
 
         if(savedInstanceState != null) {
             mAnswerIsTrue = savedInstanceState.getBoolean(CHEATER, false);
-            setAnswerShownResult(true);
+            mCheatToken = savedInstanceState.getInt(NUMBER_OF_CHEAT_TOKENS);
+            setAnswerShownResult(true, mCheatToken);
         }
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
+        mCheatToken = getIntent().getIntExtra(NUMBER_OF_CHEAT_TOKENS, 0);
 
         mAnswerTextView = findViewById(R.id.answer_text_view);
+
+        mAPILevel = findViewById(R.id.api_level_text);
+        String API_text = getResources().getString(R.string.api_level_text) + " "
+                + Build.VERSION.SDK_INT;
+        mAPILevel.setText(API_text);
 
         mShowAnswerButton = findViewById(R.id.show_answer_button);
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
@@ -73,28 +90,14 @@ public class CheatActivity extends AppCompatActivity {
                     mAnswerTextView.setText(R.string.false_button);
                 }
 
+                // decrease the cheat token by 1 if button is pressed
+                mCheatToken--;
+
                 // calling the function to set the intent
                 // put true inside b/c if the user presses the button,
                 // then they revealed the answer
-                setAnswerShownResult(true);
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    int cx = mShowAnswerButton.getWidth() / 2;
-                    int cy = mShowAnswerButton.getHeight() / 2;
-                    float radius = mShowAnswerButton.getWidth();
-                    Animator anim = ViewAnimationUtils
-                            .createCircularReveal(mShowAnswerButton, cx, cy, radius, 0);
-                    anim.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            mShowAnswerButton.setVisibility(View.INVISIBLE);
-                        }
-                    });
-                    anim.start();
-                }
-                else {
-                    mShowAnswerButton.setVisibility(View.INVISIBLE);
-                }
+                setAnswerShownResult(true, mCheatToken);
+                MainActivity.makeButtonInvisible(mShowAnswerButton);
             }
         });
     }
@@ -118,6 +121,7 @@ public class CheatActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putBoolean(CHEATER, mAnswerIsTrue);
+        savedInstanceState.putInt(NUMBER_OF_CHEAT_TOKENS, mCheatToken);
     }
 
     @Override

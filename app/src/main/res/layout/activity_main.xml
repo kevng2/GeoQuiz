@@ -39,6 +39,13 @@
             android:layout_height="wrap_content"
             android:text="@string/cheat_button"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/token_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/token_count_text" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
