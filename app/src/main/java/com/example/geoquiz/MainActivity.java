@@ -143,24 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
                 // run the activity
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
-                /*
-                if(mCheatToken == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    int cx = mCheatButton.getWidth() / 2;
-                    int cy = mCheatButton.getHeight() / 2;
-                    float radius = mCheatButton.getWidth();
-                    Animator anim = ViewAnimationUtils
-                            .createCircularReveal(mCheatButton, cx, cy, radius, 0);
-                    anim.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            mCheatButton.setVisibility(View.INVISIBLE);
-                        }
-                    });
-                    anim.start();
-                }
-
-                 */
             }
         });
 
